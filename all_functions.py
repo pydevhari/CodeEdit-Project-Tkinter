@@ -1,12 +1,9 @@
-from pygments.lexers.python import Python3Lexer
-from custom_notebook import CustomNotebook
+import imghdr
+import os
 from tkinter import filedialog as fd
 from tkinter import messagebox as mb
-from pygments import lex
-from variables import *
 
-import os
-import imghdr
+from variables import *
 
 
 class Methods(Variables):

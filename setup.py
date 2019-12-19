@@ -1,15 +1,14 @@
-from variables import *
-import variables as v
 from all_events_keybindings import *
-from formatting import *
-import toolbar_top_frame
+from variables import *
+
 
 class Main(ProjectExplorer):
     """
     This class is the main application class of the whole application.
     """
+
     def app(self):
-        '''Packing all the frames to the application'''
+        """Packing all the frames to the application"""
         self.main_window.title('CodeEdit')
         self.main_window.geometry("1100x510")
 
@@ -33,14 +32,14 @@ class Main(ProjectExplorer):
         self.main_menu.add_cascade(label=" File", menu=self.File)
         self.File.add_command(label="       New         Ctrl+N       ")
         self.File.add_command(label="       New Window        Ctrl+w       ")
-        self.File.add_command(label="       Open Project        Ctrl+O       ", command=self.open_directory)
+        self.File.add_command(label="       Open Project        Ctrl+O       ", command=self.open_project)
+        self.File.add_command(label="       Create Project        Ctrl+O       ", command=self.create_project)
         self.File.add_command(label="       Open File               ", command=self.open_file)
         self.File.add_separator()
         self.File.add_command(label="       Save        Ctrl+S       ", command=self.save_file)
         self.File.add_command(label="       Save as       ", command=self.save_as_file)
         self.File.add_separator()
         self.File.add_command(label="       Exit       ", command=exit)
-
 
         # # Edit Menu
         self.main_menu.add_cascade(label="  Edit", menu=self.Edit)
@@ -101,14 +100,13 @@ class Main(ProjectExplorer):
 
         # It will display when user right click on folder on treeview
         self.popup_for_folder.add_command(label='New File              ', command=self.new_file)
-        self.popup_for_folder.add_command(label='New Folder              ', command=self.new_dir)
+        self.popup_for_folder.add_command(label='New Folder              ', command=self.new_folder)
         self.popup_for_folder.add_command(label='Rename Folder              ', command=self.rename_file_folder)
         self.popup_for_folder.add_command(label='Delete                ', command=self.delete_file_folder)
 
         self.main_window.mainloop()
 
+
 if __name__ == '__main__':
     a = Main()
     a.app()
-
-

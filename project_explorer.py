@@ -12,11 +12,34 @@ import os
 class ProjectExplorer(Methods):
     """Provide callback methods for treeview related events such as
      open directory, open file, open image etc."""
+    def create_project(self):
+        """Method for create the  project directory"""
+        win = tk.Tk()
+        win.geometry('500x150')
 
-    def open_directory(self, event=None):
+        pro_name_lbl = ttk.Label(win, text='Project Name: ')
+        pro_name_lbl.grid(row=0, column=0, sticky='w', padx=(20, 0), pady=(20, 0))
+        pro_name_entry = ttk.Entry(win, width=50)
+        pro_name_entry.grid(row=0, column=1, pady=(20, 0))
+
+        pro_loc_lbl = ttk.Label(win, text='Project Location: ')
+        pro_loc_lbl.grid(row=1, column=0, sticky='w', padx=(20, 0))
+        pro_loc_entry = ttk.Entry(win, width=50)
+        pro_loc_entry.grid(row=1, column=1)
+        pro_loc_browse_btn = ttk.Button(win, text='Browse')
+        pro_loc_browse_btn.grid(row=1, column=2)
+
+        pro_fold_lbl = ttk.Label(win, text='Project Folder: ')
+        pro_fold_lbl.grid(row=2, column=0, sticky='w', padx=(20, 0))
+        pro_fold_entry = ttk.Entry(win, width=50)
+        pro_fold_entry.grid(row=2, column=1)
+        win.mainloop()
+
+
+    def open_project(self, event=None):
         """For open the project"""
-        # path = fd.askdirectory(title="Choose project")
-        path = r'C:\Users\hp\OneDrive\Desktop\icons'
+        path = fd.askdirectory(title="Choose project")
+        # path = r'C:\Users\hp\OneDrive\Desktop\icons'
         if not path:
             return
         abspath = os.path.abspath(path=path)
@@ -139,7 +162,7 @@ class ProjectExplorer(Methods):
         else:
             return False
 
-    def new_dir(self):
+    def new_folder(self):
         """Callback for create new directory"""
         win = tk.Tk()
         self.center_small_window(win)
@@ -377,3 +400,6 @@ class ProjectExplorer(Methods):
 
         canvas.bind('<Configure>', expand)
         win.mainloop()
+
+obj = ProjectExplorer()
+obj.create_project()
