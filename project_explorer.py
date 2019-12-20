@@ -3,6 +3,7 @@ from tkinter import messagebox as mb
 from all_functions import Methods
 from PIL import ImageTk as itk
 from tkinter import filedialog as fd
+from small_window import SmallWindow
 from tkinter import ttk
 import tkinter as tk
 import imghdr
@@ -14,34 +15,112 @@ class ProjectExplorer(Methods):
      open directory, open file, open image etc."""
     def create_project(self):
         """Method for create the  project directory"""
-        win = tk.Tk()
-        win.geometry('500x150')
+        if not 'project_win' in self.active_win_list.keys():
+            win = tk.Toplevel()
+            win.geometry('500x150')
+            win.title('Create Project')
+            win.resizable(0, 0)
+            small_win = SmallWindow()
+            small_win.center_small_window(win)
+            self.active_win_list['project_win'] = win
+            pro_name_lbl = ttk.Label(win, text='Project Name: ')
+            pro_name_lbl.grid(row=0, column=0, sticky='w', padx=(20, 0), pady=(20, 0))
+            pro_name_entry = ttk.Entry(win, width=50)
+            pro_name_entry.grid(row=0, column=1, pady=(20, 0))
+            pro_name_entry.focus_force()
+            pro_name_war_lbl = ttk.Label(win, text='')
+            pro_name_war_lbl.grid(row=4, column=1, sticky='w', pady=(20, 0))
 
-        pro_name_lbl = ttk.Label(win, text='Project Name: ')
-        pro_name_lbl.grid(row=0, column=0, sticky='w', padx=(20, 0), pady=(20, 0))
-        pro_name_entry = ttk.Entry(win, width=50)
-        pro_name_entry.grid(row=0, column=1, pady=(20, 0))
+            pro_loc_lbl = ttk.Label(win, text='Project Location: ')
+            pro_loc_lbl.grid(row=1, column=0, sticky='w', padx=(20, 0))
+            pro_loc_entry = ttk.Entry(win, width=50)
+            pro_loc_entry.insert(0, 'C:\\CodeEdit\\Projects')
+            pro_loc_entry.grid(row=1, column=1)
+            pro_loc_browse_btn = ttk.Button(win, text='Browse')
+            pro_loc_browse_btn.grid(row=1, column=2, sticky='w')
 
-        pro_loc_lbl = ttk.Label(win, text='Project Location: ')
-        pro_loc_lbl.grid(row=1, column=0, sticky='w', padx=(20, 0))
-        pro_loc_entry = ttk.Entry(win, width=50)
-        pro_loc_entry.grid(row=1, column=1)
-        pro_loc_browse_btn = ttk.Button(win, text='Browse')
-        pro_loc_browse_btn.grid(row=1, column=2)
+            pro_fold_lbl = ttk.Label(win, text='Project Folder: ')
+            pro_fold_lbl.grid(row=2, column=0, sticky='w', padx=(20, 0))
+            pro_fold_entry = ttk.Entry(win, width=50)
+            pro_fold_entry.insert(0, 'C:\\CodeEdit\\Projects\\')
+            pro_fold_entry.config(state='disabled')
+            pro_fold_entry.grid(row=2, column=1)
 
-        pro_fold_lbl = ttk.Label(win, text='Project Folder: ')
-        pro_fold_lbl.grid(row=2, column=0, sticky='w', padx=(20, 0))
-        pro_fold_entry = ttk.Entry(win, width=50)
-        pro_fold_entry.grid(row=2, column=1)
-        win.mainloop()
+            # Create project button
+            create_pro_btn = ttk.Button(win, text='Create Project', state='disabled')
+            create_pro_btn.grid(row=3, column=1, sticky='w', ipadx=35, padx=2)
+            # Cancel button
+            def destroy():
+                win.destroy()
+                del self.active_win_list['project_win']
+            close_btn = ttk.Button(win, text='Cancel', command=destroy)
+            win.protocol('WM_DELETE_WINDOW', destroy)
+            close_btn.grid(row=3, column=1, sticky='e', ipadx=35, padx=2)
 
+            def validate_fold_name(event):
+                pro_name = pro_name_entry.get()
+                pro_loc = pro_loc_entry.get()
+                flag1 = self.file_folder_name_validator(pro_name)
+                flag2 = self.file_folder_name_validator(pro_loc[pro_loc.rindex('\\')+1:])
+                if  flag1 and flag2:
+                    pro_name_war_lbl.config(text='')
+                    create_pro_btn.config(state='normal')
+                else:
+                    if not flag1:
+                        pro_name_war_lbl.config(text='Enter a valid Project Name!!', foreground='red')
+                    else:
+                        pro_name_war_lbl.config(text='Enter a valid Project Location!!', foreground='red')
+                    create_pro_btn.config(state='disabled')
+                get_path = pro_loc_entry.get()
+                pro_fold_entry.config(state='normal')
+                pro_fold_entry.delete(0, 'end')
+                pro_fold_entry.insert(0, get_path + '\\' + pro_name)
+                pro_fold_entry.icursor('end')
+                pro_fold_entry.config(state='disabled')
 
-    def open_project(self, event=None):
+            def browse():
+                dir_name = fd.askdirectory(title='Choose Project Location')
+                pro_loc_entry.delete(0, 'end')
+                pro_loc_entry.insert(0, dir_name.replace('/', '\\'))
+                pro_fold_entry.config(state='normal')
+                pro_name = pro_name_entry.get()
+                pro_fold_entry.delete(0, 'end')
+                pro_fold_entry.insert(0, dir_name.replace('/', '\\') + '\\' + pro_name)
+                pro_fold_entry.config(state='disabled')
+                pro_loc_entry.focus_force()
+
+            def create_pro():
+                try:
+                    pro_path = pro_fold_entry.get()
+                    os.makedirs(pro_path)
+                    self.open_project(pro_path=pro_path)
+                    win.destroy()
+                except FileExistsError:
+                    mb.showerror('Project Name Already Exist', 'Please choose another Project name.\nIt is already exist.')
+                    win.focus_force()
+                except Exception as e:
+                    mb.showerror('Exception', e)
+                    win.focus_force()
+
+            pro_loc_browse_btn.config(command=browse)
+            create_pro_btn.config(command=create_pro)
+            win.bind('<KeyPress>', validate_fold_name)
+        else:
+            self.active_win_list['project_win'].destroy()
+            del self.active_win_list['project_win']
+            self.create_project()
+
+    def open_project(self, event=None, pro_path=''):
         """For open the project"""
-        path = fd.askdirectory(title="Choose project")
+        if not pro_path:
+            path = fd.askdirectory(title="Choose project")
+            if not path:
+                return
+        else:
+            path=pro_path
+
         # path = r'C:\Users\hp\OneDrive\Desktop\icons'
-        if not path:
-            return
+
         abspath = os.path.abspath(path=path)
         self.insert_node('', abspath, abspath)
         self.tree.heading('#0', text=os.path.basename(path))
@@ -67,6 +146,7 @@ class ProjectExplorer(Methods):
             node = self.tree.insert(parent, index, text=text, open=False, image=self.img2)
         if indirect:
             self.tree.selection_set(node)
+            self.tree.see(node)
             return
         if os.path.isdir(abspath):
             self.nodes[node] = abspath
@@ -164,101 +244,96 @@ class ProjectExplorer(Methods):
 
     def new_folder(self):
         """Callback for create new directory"""
-        win = tk.Tk()
-        self.center_small_window(win)
-        win.resizable(0, 0)
-        win.title('Create New Folder')
-        win.geometry('300x100')
-        entry = ttk.Entry(win, font=('Consolas', 12))
-        entry.focus_force()
-        entry.pack(fill='x', pady=(10, 0), padx=5)
 
         def create_directory(event=None):
             """Directory creation logic"""
             dir_path = self.get_selected_file_path(opentab=0)
-            dir_name = entry.get()
+            dir_name = small_win.entry.get()
             if self.file_folder_name_validator(dir_name):
                 try:
-                    os.mkdir(dir_path + '\\' + dir_name)
-                    filelist = [file for file in os.listdir(dir_path)
-                                if not os.path.isdir(dir_path + '\\' + file)]  # get list of all files
-                    dirlist = [dir for dir in os.listdir(dir_path)
-                               if os.path.isdir(dir_path + '\\' + dir)]  # get list of all directoies
-                    filelist.extend(dirlist)  # merge both lists
-                    self.tree.item(self.tree.selection(), open=True)
+                    self.tree.item(self.tree.selection(), open=True)  # First, open the node
                     self.open_node()
-                    id = self.tree.insert(parent=self.tree.selection(), index=f'{filelist.index(dir_name)}',
-                                          text=dir_name, image=self.img)  # insert the item
-                    self.tree.selection_set(id)  # select the item
-                    win.destroy()
+                    os.mkdir(dir_path + '\\' + dir_name)
+                    dirlist = [dir for dir in os.listdir(dir_path) if
+                               os.path.isdir(dir_path + '\\' + dir)]  # get list of all directories
+                    filelist = [file for file in os.listdir(dir_path) if
+                                not os.path.isdir(dir_path + '\\' + file)]  # get list of all files
+                    filelist.extend(dirlist)  # merge both lists
+
+                    self.insert_node(self.tree.selection(), text=dir_name,
+                                     index=f'{filelist.index(dir_name)}',
+                                     abspath=dir_path + '\\' + dir_name , indirect=1)
+                    small_win.win.destroy()
                 except FileExistsError:
                     mb.showerror('Directory already exists', 'Choose another directory name')
-                    entry.focus_force()
+                    small_win.entry.focus_force()
                 except Exception as e:
                     mb.showerror('Error', e)
-                    entry.focus_force()
+                    small_win.entry.focus_force()
             else:
                 mb.showerror('Error', 'Enter valid directory name'.center(5, ' '))
-                entry.focus_force()
+                small_win.entry.focus_force()
 
-        entry.bind('<Return>', create_directory)
-        btn = ttk.Button(win, text='Create File', command=create_directory, width=23)
-        btn.pack(pady=(20, 0), ipady=2, side='left', expand=True, padx=5)
-        btn2 = ttk.Button(win, text='Cancel', command=win.destroy, width=23)
-        btn2.pack(pady=(20, 0), ipady=2, side='left', expand=True, padx=5)
+        if not 'new_folder_win' in self.active_win_list.keys():
+            small_win = SmallWindow()
+            small_win.create_win(title='Create New Folder', btn_text='Create Folder', callback=create_directory)
+            self.active_win_list['new_folder_win'] = small_win.win
 
-        def destroy(event):
-            win.destroy()
+            def destroy(event=None):
+                small_win.win.destroy()
+                del self.active_win_list['new_folder_win']
+            small_win.btn2.bind('<Return>', destroy)
+            small_win.win.protocol('WM_DELETE_WINDOW', destroy)
 
-        btn2.bind('<Return>', destroy)
+
+        else:
+            self.active_win_list['new_folder_win'].destroy()
+            del self.active_win_list['new_folder_win']
+            self.new_folder()
+
 
     def new_file(self):
         """Callback for create new file"""
-        win = tk.Tk()
-        self.center_small_window(win)
-        win.resizable(0, 0)
-        win.title('Create New File')
-        win.geometry('300x100')
-        entry = ttk.Entry(win, font=('Consolas', 12))
-        entry.focus_force()
-        entry.pack(fill='x', pady=(10, 0), padx=5)
+
 
         def create_file(event=None):
             """File creation logic"""
             dir_path = self.get_selected_file_path(opentab=0)
-            file_name = entry.get()
+            file_name = small_win.entry.get()
             if self.file_folder_name_validator(file_name):
                 if '.' in file_name and len(file_name[file_name.rindex('.') + 1:]) > 0:
                     try:
+                        self.tree.item(self.tree.selection(), open=True)  # First open the node
+                        self.open_node()
                         open(dir_path + '\\' + file_name, mode='x').close()  # Create a new file
                         filelist = [file for file in os.listdir(dir_path) if
                                     not os.path.isdir(dir_path + '\\' + file)]  # get list of all files
                         filelist.append(file_name)
                         filelist.sort(key=str.lower)
                         # id = self.tree.insert(self.tree.selection(), f'{filelist.index(file_name)}', text=file_name, image=self.img2)  # insert the item
-                        self.tree.item(self.tree.selection(), open=True)  # First open the node
                         self.insert_node(self.tree.selection(), text=file_name, index=f'{filelist.index(file_name)}',
                                          abspath=dir_path + '\\' + file_name, indirect=1)
-                        win.destroy()
+                        small_win.win.destroy()
                         self.add_tab(file=dir_path + '\\' + file_name, open_file=1)
                     except FileExistsError:
                         ans = mb.askyesno('File already exists', 'Do you want to replace this file?')
                         if ans:
                             open(dir_path + '\\' + file_name, "w").close()
-                            win.destroy()
+                            small_win.win.destroy()
                             child = self.tree.get_children(self.tree.selection())
                             for item in child:
                                 if self.tree.item(item)['text'] == file_name:
                                     self.tree.selection_set(item)
                                     self.add_tab(file=dir_path + '\\' + file_name, open_file=1)
                         else:
-                            entry.focus_force()
+                            small_win.entry.focus_force()
                     except Exception as e:
                         mb.showerror('Error', e)
                 else:
                     try:
+                        self.tree.item(self.tree.selection(), open=True)  # First open the
+                        self.open_node()
                         open(dir_path + '\\' + file_name + '.txt', mode='x').close()
-                        self.tree.item(self.tree.selection(), open=True)  # First open the node
                         filelist = [file for file in os.listdir(dir_path) if
                                     not os.path.isdir(dir_path + '\\' + file)]  # get list of all files
                         filelist.append(file_name)
@@ -267,7 +342,7 @@ class ProjectExplorer(Methods):
                         self.insert_node(self.tree.selection(), text=file_name + '.txt',
                                          index=f'{filelist.index(file_name)}',
                                          abspath=dir_path + '\\' + file_name + '.txt', indirect=1)
-                        win.destroy()
+                        small_win.win.destroy()
                         self.add_tab(file=dir_path + '\\' + file_name + '.txt', open_file=1)
                     except FileExistsError:
                         ans = mb.askyesno('File already exists', 'Do you want to replace this file?')
@@ -279,66 +354,37 @@ class ProjectExplorer(Methods):
                                     self.tree.item(self.tree.selection(), open=True)
                                     self.tree.selection_set(item)
                                     self.add_tab(file=dir_path + '\\' + file_name + '.txt', open_file=1)
-                            win.destroy()
+                            small_win.win.destroy()
                         else:
-                            entry.focus_force()
+                            small_win.entry.focus_force()
                     except Exception as e:
                         mb.showerror('Error', e)
 
             else:
                 mb.showerror('Error', 'Enter valid file name'.center(5, ' '))
-                entry.focus_force()
+                small_win.entry.focus_force()
 
-        # except:
-        #     mb.showerror('Error', 'File aready exist')
-        #     win.focus_force()
+        small_win = SmallWindow()
+        small_win.create_win(title='New File', btn_text='Create File', callback=create_file)
 
-        entry.bind('<Return>', create_file)
-        btn = ttk.Button(win, text='Create File', command=create_file, width=23)
-        btn.pack(pady=(20, 0), ipady=2, side='left', expand=True, padx=5)
-        btn2 = ttk.Button(win, text='Cancel', command=win.destroy, width=23)
-        btn2.pack(pady=(20, 0), ipady=2, side='left', expand=True, padx=5)
-
-        def destroy(event):
-            win.destroy()
-
-        btn2.bind('<Return>', destroy)
-        # win.mainloop()
-
-    def center_small_window(self, win):
-        """Display small windows in the central area of main window"""
-        w = 600
-        h = 200
-        ws = win.winfo_screenwidth()
-        hs = win.winfo_screenheight()
-        x = (ws / 2) - (w / 2)
-        y = (hs / 2) - (h / 2)
-        win.geometry(f"{w}x{h}+{int(x)}+{int(y)}")  # set the window in center of the screen
 
     def rename_file_folder(self):
-        win = tk.Tk()
-        self.center_small_window(win)
-        win.resizable(0, 0)
-        win.geometry('300x100')
-        entry = ttk.Entry(win, font=('Consolas', 12))
-        entry.focus_force()
-        entry.pack(fill='x', pady=(10, 0), padx=5)
-
+        """Rename file or folder"""
+        small_win = SmallWindow()
+        small_win.create_win(title='', btn_text='', callback='')
         file_or_folder_path = self.get_selected_file_path(opentab=0)
         old_file_name = os.path.basename(file_or_folder_path)
-        entry.insert(0, old_file_name)
+        small_win.entry.insert(0, old_file_name)
         if not os.path.isdir(file_or_folder_path):
-            entry.selection_range(0, old_file_name.rindex('.'))
-            entry.icursor(old_file_name.rindex('.'))
-            id = "File"
+            small_win.entry.selection_range(0, old_file_name.rindex('.'))
+            small_win.entry.icursor(old_file_name.rindex('.'))
+            action_id = "File"
         else:
-            id = "Folder"
-
-        win.title(f'Rename {id}')
+            action_id = "Folder"
+        small_win.win.title(f'Rename {action_id}')
 
         def rename_file_folder():
             """Rename the selected file or folder"""
-
             def rename():
                 """rename logic for code reusability"""
                 global new_name
@@ -347,13 +393,14 @@ class ProjectExplorer(Methods):
                 os.rename(file_or_folder_path, new_name)
 
             try:
-                new_file_folder_name = entry.get()
+                global new_name
+                new_file_folder_name = small_win.entry.get()
                 if self.file_folder_name_validator(new_file_folder_name):
                     if os.path.isdir(file_or_folder_path):
                         rename()
                         self.nodes[self.tree.selection()[0]] = new_name  # update the nodes dictionary
                         self.tree.item(self.tree.selection(), text=new_file_folder_name)
-                        win.destroy()
+                        small_win.win.destroy()
                     else:
                         if '.' in new_file_folder_name \
                                 and len(new_file_folder_name[new_file_folder_name.rindex('.') + 1:]) > 0 \
@@ -364,32 +411,24 @@ class ProjectExplorer(Methods):
                                 self.nb.tab(tab_index, text=os.path.basename(new_name))
                                 self.file_list[tab_index] = new_name
                             self.tree.item(self.tree.selection(), text=new_file_folder_name)
-                            win.destroy()
+                            small_win.win.destroy()
                         else:
                             mb.showerror('Error', 'Enter a valid file name')
-                            entry.focus_force()
+                            small_win.entry.focus_force()
                 else:
-                    mb.showerror('Error', f"Enter valid {id} name")
-                    entry.focus_force()
+                    mb.showerror('Error', f"Enter valid {action_id} name")
+                    small_win.entry.focus_force()
             except FileExistsError:
-                mb.showerror('Error', f'{id} already exist. Enter another {id} name.')
-                entry.focus_force()
+                mb.showerror('Error', f'{action_id} already exist. Enter another {action_id} name.')
+                small_win.entry.focus_force()
             except Exception as e:
                 mb.showerror('Error', e)
-        entry.bind('<Return>', rename_file_folder)
-        btn = ttk.Button(win, text=f'Rename {id}', width=23, command=rename_file_folder)
-        btn.pack(pady=(20, 0), ipady=2, side='left', expand=True, padx=5)
-        btn2 = ttk.Button(win, text='Cancel', command=win.destroy, width=23)
-        btn2.pack(pady=(20, 0), ipady=2, side='left', expand=True, padx=5)
 
-        def destroy(event):
-            win.destroy()
-
-        btn2.bind('<Return>', destroy)
+        small_win.btn.config(text=f'Rename {action_id}', command =rename_file_folder)
 
     def open_image(self, img):
         from PIL import ImageTk, Image
-        win = tk.Tk()
+        win = tk.Toplevel()
         canvas = tk.Canvas(win, bg='black', width=400, height=400)
         canvas.pack(fill='both', expand=1)
         image = ImageTk.PhotoImage(Image.open(img), master=win)
@@ -401,5 +440,3 @@ class ProjectExplorer(Methods):
         canvas.bind('<Configure>', expand)
         win.mainloop()
 
-obj = ProjectExplorer()
-obj.create_project()

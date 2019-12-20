@@ -131,5 +131,8 @@ class Variables:
     popup_for_file = Menu(tree, tearoff=0)
     popup_for_folder = Menu(tree, tearoff=0)
 
-    # a list which contains the status of all tabs
+    # a list which contains the status of all tabs means which file is opened
     file_list = [None]
+
+    active_win_list = {}
+
