@@ -2,9 +2,7 @@ from variables import Variables as v
 
 def yview(*args):
     v.mini_map_text.yview(*args)
-    v.text.yview(*args)
-
-
+    v.text_area.yview(*args)
 
 
 

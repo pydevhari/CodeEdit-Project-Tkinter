@@ -1,15 +1,15 @@
-from all_functions import Methods
+from all_functions import CommonTask
 from pygments import lex
 from pygments.lexers.python import Python3Lexer
 
-class Highlighting(Methods):
+class Highlighting(CommonTask):
     """Highlight the text according language specific.
     Currently support only for Python"""
     def tag_conf(self):
         # self.previousContent = text.get("1.0", 'end')
         text = self.get_current()
         text.tag_configure("Token.Keyword", foreground="orange")
-        text.tag_configure("Token.Name", foreground="red")
+        # text.tag_configure("Token.Name", foreground="red")
         text.tag_configure("Token.Keyword.Constant", foreground="#CC7A00")
         text.tag_configure("Token.Keyword.Declaration", foreground="#CC7A00")
         text.tag_configure("Token.Keyword.Namespace", foreground="orange")
@@ -20,12 +20,12 @@ class Highlighting(Methods):
         text.tag_configure("Token.Name.Exception", foreground="#003D99")
         text.tag_configure("Token.Operator.Word", foreground="#CC7A00")
         text.tag_configure("Token.Comment", foreground="gray")
-        text.tag_configure("Token.Name.Function", foreground="#ff0606")
+        text.tag_configure("Token.Name.Function", foreground="purple")
         text.tag_configure("Token.Name.Builtin", foreground="purple")
         text.tag_configure("Token.Literal.String.Single", foreground="green")
         text.tag_configure("Token.Literal.String.Double", foreground="green")
         text.tag_configure("Token.Punctuation", foreground="blue")
-        text.tag_configure("Token.Literal.String.Doc", foreground="green")
+        text.tag_configure("Token.Literal.String.Doc", foreground="gray")
 
     def remove_tags(self, row):
         text = self.get_current()
@@ -52,6 +52,8 @@ class Highlighting(Methods):
 
     def highlight(self, event=None):
         """Highlight the syntax of the current line"""
+        # current = self.file_list[self.nb.index('current')]
+        # if current is not None and current.endswith('.py'):
         text_widget = self.get_current()
         row = text_widget.index('insert').split('.')[0]
         self.remove_tags(row)
@@ -91,10 +93,12 @@ class Highlighting(Methods):
     
     def highlight2(self, event=None):
         """Highlight the syntax of the current line"""
+        # current = self.file_list[self.nb.index('current')]
+        # if current is not None and current.endswith('.py'):
         text_widget = self.get_current()
-        row = text_widget.index('insert').split('.')[0]
+        # row = text_widget.index('insert').split('.')[0]
         self.remove_tags2(1)
-        content = text_widget.get("1.0", 'end')
+        # content = text_widget.get("1.0", 'end')
         # lines = content.split("\n")
         text_widget.mark_set("range_start", "1" + ".0")
         data = text_widget.get("1.0", "end")

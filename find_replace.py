@@ -1,9 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
-from all_functions import Methods
+from all_functions import CommonTask
 
 
-class Find(Methods):
+class Find(CommonTask):
     """Perform find/search related operation"""
     def search_words(self, event=None, findword=None, chkbtn1=None,
                      chkbtn2=None, label=None, replaceword=None):
@@ -42,9 +42,9 @@ class Find(Methods):
         label.config(text=f'Matches Found: {match}')
         return match
 
-    def find(self, event=None, replace=False, words=None):
+    def find(self, event=None):
         """Method for find/search words in the current tab's text area"""
-        find_win = tk.Tk()
+        find_win = tk.Toplevel()
         w = 600
         h = 200
         ws = find_win.winfo_screenwidth()
@@ -53,6 +53,7 @@ class Find(Methods):
         y = (hs / 2) - (h / 2)
         find_win.geometry(f"{w}x{h}+{int(x)}+{int(y)}")  # set the window in center of the screen
         find_win.resizable(0, 0)
+        # find_win.grab_set()
         find_win.title("Find")
         f_entry = ttk.Entry(find_win, width=50)
         f_entry.pack()
@@ -89,18 +90,23 @@ class Find(Methods):
 
         find_win.bind('<KeyPress>', search)
         search()
-        find_win.mainloop()
+        def destroy(event=None):
+            self.get_current().tag_delete('highlight')
+            find_win.destroy()
+        find_win.protocol('WM_DELETE_WINDOW', destroy)
+        # find_win.mainloop()
 
 
 class Replace(Find):
     """Perform replace operation"""
     def replace(self, event=None):
         """Replace the matched word(s)"""
-        replace_win = tk.Tk()
+        replace_win = tk.Toplevel()
         w = 600
         h = 200
         ws = replace_win.winfo_screenwidth()
         hs = replace_win.winfo_screenheight()
+        # replace_win.grab_set()
         x = (ws / 2) - (w / 2)
         y = (hs / 2) - (h / 2)
         replace_win.geometry(f"{w}x{h}+{int(x)}+{int(y)}")  # set the window in center of the screen
