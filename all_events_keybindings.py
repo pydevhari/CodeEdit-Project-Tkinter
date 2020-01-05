@@ -1,19 +1,12 @@
 from project_explorer import ProjectExplorer
-from syntax_highlight import Highlighting
 from find_replace import Replace
-from toolbar_top_frame import Toolbar
+from toolbar_top_frame import Toolbar  # for enable toolbar frame
 from font import Font
-from formatting import yview
+from parallel_scroll import yview
 
 
 class EventsAndKeyBindings(ProjectExplorer, Replace, Font):
     """Bind all shortcut keys and other events"""
-
-    # def keypress_func(self, event=None):
-    #     self.get_mini_map_text()
-    #     Highlighting().highlight()
-    #     # Highlighting().highlight()
-
     new_y = 0
     old_y = 0
     def __init__(self):
@@ -25,7 +18,9 @@ class EventsAndKeyBindings(ProjectExplorer, Replace, Font):
         self.text_area.bind('<Button-3>', self.txt_area_popup_menu)
         self.main_window.bind('<Configure>', self.line_counter)
         self.main_window.bind('<Control - f>', self.find)
+        self.main_window.bind('<Control - F>', self.find)
         self.main_window.bind('<Control - r>', self.replace)
+        self.main_window.bind('<Control - R>', self.replace)
         self.main_window.bind('<Control-d>', self.change_theme)
 
         self.text_area.bind("<<Change>>", self.line_counter)
@@ -39,14 +34,16 @@ class EventsAndKeyBindings(ProjectExplorer, Replace, Font):
         self.text_area.bind("<Control-Shift-R>", self.font_reset)
         self.text_area.bind("<<Modified>>", self.modified_flag)
         self.main_window.bind('<Control-s>', self.save_file)
+        self.main_window.bind('<Control-S>', self.save_file)
         self.main_window.bind('<Control-o>', self.open_project)
+        self.main_window.bind('<Control-O>', self.open_project)
         self.main_window.bind('<Control-g>', self.go_to_line)
         self.main_window.bind('<Control-G>', self.go_to_line)
         # self.open_directory()
         # self.create_project()
         self.text_area.bind('<Control-a>', self.select_all)
+        self.text_area.bind('<Control-A>', self.select_all)
         self.main_window.protocol('WM_DELETE_WINDOW', self.on_main_win_close)
-        # self.main_window.bind('<Control-w>', self.show_hide_toolbar)
 
         self.main_window.bind("<Control-n>", self.add_tab)
         self.main_window.bind("<Control-N>", self.add_tab)
@@ -111,11 +108,11 @@ class EventsAndKeyBindings(ProjectExplorer, Replace, Font):
             # print(event)
 
         # self.mini_map_text.bind('<B1-Motion>', call)
-        def config(event):
-            self.tree.update()
-            self.y_scrollbar.update()
-            self.mini_map_text.update()
-        self.tree.bind('<Configure>', config)
+        # def config(event):
+        #     self.tree.update()
+        #     self.y_scrollbar.update()
+        #     self.mini_map_text.update()
+        # self.tree.bind('<Configure>', config)
 
         self.text_area.bind("<<Selection>>", self.count_selected_chars)
 

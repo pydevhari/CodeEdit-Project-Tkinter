@@ -4,7 +4,7 @@ from common_tasks import CommonTask
 from PIL import ImageTk as itk
 from PIL import Image
 from tkinter import filedialog as fd
-from small_window import ToplevelWindow
+from toplevel_window import ToplevelWindow
 from tkinter import ttk
 import tkinter as tk
 import imghdr
