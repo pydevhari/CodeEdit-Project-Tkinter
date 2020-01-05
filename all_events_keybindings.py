@@ -117,7 +117,7 @@ class EventsAndKeyBindings(ProjectExplorer, Replace, Font):
             self.mini_map_text.update()
         self.tree.bind('<Configure>', config)
 
-        self.text_area.bind("<<Selection>>", self.selected_chars)
+        self.text_area.bind("<<Selection>>", self.count_selected_chars)
 
 # keys = Events_and_Keys()
 

@@ -1,9 +1,10 @@
 # from tkinter import filedialog as fd
 from tkinter import messagebox as mb
-from all_functions import CommonTask
+from common_tasks import CommonTask
 from PIL import ImageTk as itk
+from PIL import Image
 from tkinter import filedialog as fd
-from small_window import SmallWindow
+from small_window import ToplevelWindow
 from tkinter import ttk
 import tkinter as tk
 import imghdr
@@ -21,8 +22,8 @@ class ProjectExplorer(CommonTask):
         win.title('Create Project')
         win.grab_set()
         win.resizable(0, 0)
-        small_win = SmallWindow()
-        small_win.center_small_window(win)
+        small_win = ToplevelWindow()
+        small_win.center_toplevel_window(win)
         pro_name_lbl = ttk.Label(win, text='Project Name: ')
         pro_name_lbl.grid(row=0, column=0, sticky='w', padx=(20, 0), pady=(20, 0))
         pro_name_entry = ttk.Entry(win, width=50)
@@ -281,7 +282,7 @@ class ProjectExplorer(CommonTask):
                 mb.showerror('Error', 'Enter valid directory name'.center(5, ' '))
                 small_win.entry.focus_force()
 
-        small_win = SmallWindow()
+        small_win = ToplevelWindow()
         small_win.create_win(title='Create New Folder', btn_text='Create Folder', callback=create_directory)
 
     def new_file(self):
@@ -355,12 +356,12 @@ class ProjectExplorer(CommonTask):
                 mb.showerror('Error', 'Enter valid file name'.center(5, ' '))
                 small_win.entry.focus_force()
 
-        small_win = SmallWindow()
+        small_win = ToplevelWindow()
         small_win.create_win(title='New File', btn_text='Create File', callback=create_file)
 
     def rename_file_folder(self):
         """Rename file or folder"""
-        small_win = SmallWindow()
+        small_win = ToplevelWindow()
         small_win.create_win(title='', btn_text='', callback='')
         file_or_folder_path = self.get_selected_file_path(opentab=0)
         old_file_name = os.path.basename(file_or_folder_path)
@@ -426,12 +427,24 @@ class ProjectExplorer(CommonTask):
         small_win.btn.config(text=f'Rename {action_id}', command=rename_file_folder)
         small_win.win.bind('<Return>', rename_file_folder)
 
+    def copy_folder_path(self):
+        """Append selected folder's path to clipboard"""
+        self.main_window.clipboard_clear()
+        self.main_window.clipboard_append(self.get_selected_file_path(opentab=0))
+
+    def copy_file_path(self):
+        """Append selected files's path to clipboard"""
+        self.main_window.clipboard_clear()
+        self.main_window.clipboard_append(self.get_selected_file_path(opentab=0))
+
     def open_image(self, img):
-        from PIL import ImageTk, Image
+        # from PIL import ImageTk, Image
         win = tk.Toplevel()
+        win.title(img + "   CodeEdit ImageViewer")
+        win.focus_force()
         canvas = tk.Canvas(win, bg='black', width=400, height=400)
         canvas.pack(fill='both', expand=1)
-        image = ImageTk.PhotoImage(Image.open(img), master=win)
+        image = itk.PhotoImage(Image.open(img), master=win)
 
         def expand(event):
             canvas.delete('all')

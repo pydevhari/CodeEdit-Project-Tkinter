@@ -123,6 +123,7 @@ class Variables:
     main_window.config(menu=main_menu)
     File = tk.Menu(main_menu, tearoff=0, bd=0, borderwidth=0)
     Edit = tk.Menu(main_menu, tearoff=0)
+    Search = tk.Menu(main_menu, tearoff=0)
     Toolbars = tk.Menu(main_menu, tearoff=0)
     Format = tk.Menu(main_menu, tearoff=0)
     View = tk.Menu(main_menu, tearoff=0)

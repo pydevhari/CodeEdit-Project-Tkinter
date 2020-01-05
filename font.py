@@ -1,4 +1,4 @@
-from all_functions import CommonTask
+from common_tasks import CommonTask
 import tkinter as tk
 from tkinter import ttk
 

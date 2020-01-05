@@ -18,7 +18,7 @@ class Toolbar(Replace, ProjectExplorer, Font):
     copy_icon = tk.PhotoImage(file='images/copy_icon.png')
     undo_icon = tk.PhotoImage(file='images/undo_icon.png')
     redo_icon = tk.PhotoImage(file='images/redo_icon.png')
-    select_all_icon = tk.PhotoImage(file='images/select_all_icon.png')
+    # select_all_icon = tk.PhotoImage(file='images/select_all_icon.png')
     search_icon = tk.PhotoImage(file='images/search_icon.png')
     replace_icon = tk.PhotoImage(file='images/replace_icon2.png')
     font_decrease_icon = tk.PhotoImage(file='images/font_decrease.png')

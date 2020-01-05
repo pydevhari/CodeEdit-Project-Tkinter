@@ -1,4 +1,4 @@
-from all_functions import CommonTask
+from common_tasks import CommonTask
 from pygments import lex
 from pygments.lexers.python import Python3Lexer
 

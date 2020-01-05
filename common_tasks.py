@@ -101,9 +101,11 @@ class CommonTask(Variables):
                     f = open(file)
                     text_area.insert("1.0", f.read())
                     self.nb.add(tab1, text=filename)
-                    self.nb.select(tab1)
+                    self.nb.select(tab1)   # for select current tab
                     self.file_list.append(file)
                     text_area.edit_modified(arg=False)
+                    from syntax_highlight import Highlighting
+                    Highlighting().highlight2()
                 except:
                     tab1.destroy()
                     mb.showerror('Error', "Can't open uneditable file")
@@ -125,6 +127,8 @@ class CommonTask(Variables):
                 # f.close()
                 self.nb.add(tab1, text=filename)
                 self.nb.select(tab1)
+                from syntax_highlight import Highlighting
+                Highlighting().highlight2()
             except Exception as e:
                 print(e)
             finally:
@@ -155,7 +159,7 @@ class CommonTask(Variables):
         # text_area.bind("<<Paste>>", Highlighting().highlight2)
         text_area.bind('<Button-3>',
                        self.txt_area_popup_menu)  # For display right click popup menu inside the text area
-        text_area.bind("<<Selection>>", self.selected_chars)
+        text_area.bind("<<Selection>>", self.count_selected_chars)
         text_area.modified = 0
         # ------------------------------------------------------------
 
@@ -264,6 +268,7 @@ class CommonTask(Variables):
         textArea.event_generate('<<Paste>>')
         if func:
             func()
+        self.count_selected_chars()
         textArea.see('insert')
 
     def select_all(self, event=None):
@@ -357,7 +362,7 @@ class CommonTask(Variables):
         """Perform save as operation"""
 
         file = fd.asksaveasfile(title="Save as", defaultextension=".txt",
-                                filetypes=[("tk.Text(default)", "*.txt"), ("Python", "*.py"), ("Java", "*.java"),
+                                filetypes=[("Text(default)", "*.txt"), ("Python", "*.py"), ("Java", "*.java"),
                                            ("All files", "*.*")])
         if file == None:
             return
@@ -485,7 +490,7 @@ class CommonTask(Variables):
             self.working_area.pack(fill='both', side='left', expand=True)
             self.code_minimap_frame.pack(fill='both', side='left', pady=(22, 0))
             self.minimap_flag = 1
-            self.View.entryconfigure(1, label='Hide Minimap', command=self.minimap_show_hide)
+            self.View.entryconfigure(1, label='  Hide Code Minimap   ', command=self.minimap_show_hide)
         else:
             self.code_minimap_frame.pack_forget()
             self.minimap_flag = 0
@@ -578,7 +583,7 @@ class CommonTask(Variables):
         elif self.wrap.get() == 1:
             textArea.config(wrap='word')
 
-    def selected_chars(self, event=None):
+    def count_selected_chars(self, event=None):
         """Display number of selected chars and lines on status bar"""
         try:
             textArea = self.get_current()

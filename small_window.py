@@ -1,11 +1,11 @@
 import tkinter as tk
 from tkinter import ttk
-class SmallWindow:
+class ToplevelWindow:
     """Class for create small windows of same structure like rename, create file or folder"""
     def create_win(self, title, btn_text, callback):
         """Initialize all the window's widgets and attach to window"""
         self.win = tk.Toplevel()
-        self.center_small_window(self.win)
+        self.center_toplevel_window(self.win)
         self.win.resizable(0, 0)
         self.win.grab_set()
         self.win.title(title)
@@ -21,7 +21,7 @@ class SmallWindow:
         self.btn2.bind('<Return>', self.win.destroy)
         # self.win.mainloop()
 
-    def center_small_window(self, win):
+    def center_toplevel_window(self, win):
         """Display small windows in the central area of main window"""
         w = 600
         h = 200

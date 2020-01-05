@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from all_functions import CommonTask
+from common_tasks import CommonTask
 
 
 class Find(CommonTask):
