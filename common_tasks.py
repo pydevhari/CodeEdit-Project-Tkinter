@@ -9,7 +9,7 @@ import os
 
 
 class CommonTask(Variables):
-    """Contain all functions for application"""
+    """Contains common functionality for application"""
 
     def get_cursor_pos(self, event=None):
         """  """
@@ -605,6 +605,7 @@ class CommonTask(Variables):
     desc_logo = tk.PhotoImage(file='images/desc_logo.png')
 
     def about(self):
+        """About window"""
         about_win = tk.Toplevel()
         w = 600
         h = 350

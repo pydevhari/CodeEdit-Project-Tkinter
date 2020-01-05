@@ -1,8 +1,8 @@
+"""
+Main setup file
+"""
 from all_events_keybindings import EventsAndKeyBindings
 import tkinter as tk
-# from font import Font
-# from formatting import *
-
 
 class Application(EventsAndKeyBindings):
     """
@@ -81,9 +81,6 @@ class Application(EventsAndKeyBindings):
         self.main_menu.add_cascade(label="  View", menu=self.View)
         self.View.add_cascade(label="  Zoom                ", menu=self.zoom_menu)
         self.View.add_cascade(label="  Show Code Minimap   ", command=self.minimap_show_hide)
-
-
-        # self.View.add_checkbutton(label="       Status Bar       ", onvalue=1, offvalue=0)
 
         # Help Menu
         self.main_menu.add_cascade(label="  Help", menu=self.Help)
