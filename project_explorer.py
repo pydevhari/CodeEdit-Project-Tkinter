@@ -125,7 +125,7 @@ class ProjectExplorer(CommonTask):
 
     img = itk.PhotoImage(file='images/folder.png')
     img2 = itk.PhotoImage(file='images/file.png')
-    img3 = itk.PhotoImage(file='images/icons8-image-file-16.png')
+    img3 = itk.PhotoImage(file='images/image_icon.png')
     img4 = itk.PhotoImage(file='images/python.png')
 
     nodes = dict()
