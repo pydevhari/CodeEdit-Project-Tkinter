@@ -6,7 +6,7 @@ import tkinter as tk
 
 class Application(EventsAndKeyBindings):
     """
-    This class is the main application class of the whole application.
+    This class is the main application class of the application.
     """
     def app(self):
         """Packing all the frames to the application"""

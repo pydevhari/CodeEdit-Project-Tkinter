@@ -304,7 +304,7 @@ class CommonTask(Variables):
     def open_file(self, event=None):
         """Open the file in new tab."""
         file = fd.askopenfile(title="Choose file to open",
-                              filetypes=[("tk.Text(default)", "*.txt"), ("Python", "*.py"),
+                              filetypes=[("Python(default)", "*.py"), ("Text", "*.txt"),
                                          ("Java", "*.java"), ("JavaScript", "*.js"),
                                          ("HTML", "*.html"), ("CSS", "*.css"),
                                          ("All files", "*.*")])
@@ -331,7 +331,7 @@ class CommonTask(Variables):
         from syntax_highlight import Highlighting
         if self.file_list[current_tab] == None:
             file = fd.asksaveasfile(title="Save file", defaultextension=".txt",
-                                    filetypes=[("tk.Text(default)", "*.txt"), ("Python", "*.py"),
+                                    filetypes=[("Python(default)", "*.py"), ("Text", "*.txt"),
                                                ("Java", "*.java"), ("JavaScript", "*.js"),
                                                ("HTML", "*.html"), ("CSS", "*.css"),
                                                ("All files", "*.*")])

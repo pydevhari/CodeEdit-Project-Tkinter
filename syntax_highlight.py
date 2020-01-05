@@ -52,20 +52,20 @@ class Highlighting(CommonTask):
 
     def highlight(self, event=None):
         """Highlight the syntax of the current line"""
-        # current = self.file_list[self.nb.index('current')]
-        # if current is not None and current.endswith('.py'):
-        text_widget = self.get_current()
-        row = text_widget.index('insert').split('.')[0]
-        self.remove_tags(row)
-        content = text_widget.get("1.0", 'end')
-        lines = content.split("\n")
-        text_widget.mark_set("range_start", row + ".0")
-        data = text_widget.get(row + ".0", row + "." + str(len(lines[int(row) - 1])))
-        for token, content in lex(data, Python3Lexer()):
-            text_widget.mark_set("range_end", "range_start + %dc" % len(content))
-            text_widget.tag_add(str(token), "range_start", "range_end")
-            text_widget.mark_set("range_start", "range_end")
-        self.tag_conf()
+        current = self.file_list[self.nb.index('current')]
+        if current is not None and current.endswith('.py'):
+            text_widget = self.get_current()
+            row = text_widget.index('insert').split('.')[0]
+            self.remove_tags(row)
+            content = text_widget.get("1.0", 'end')
+            lines = content.split("\n")
+            text_widget.mark_set("range_start", row + ".0")
+            data = text_widget.get(row + ".0", row + "." + str(len(lines[int(row) - 1])))
+            for token, content in lex(data, Python3Lexer()):
+                text_widget.mark_set("range_end", "range_start + %dc" % len(content))
+                text_widget.tag_add(str(token), "range_start", "range_end")
+                text_widget.mark_set("range_start", "range_end")
+            self.tag_conf()
         
     
     def remove_tags2(self, row):
@@ -93,17 +93,17 @@ class Highlighting(CommonTask):
     
     def highlight2(self, event=None):
         """Highlight the syntax of the current line"""
-        # current = self.file_list[self.nb.index('current')]
-        # if current is not None and current.endswith('.py'):
-        text_widget = self.get_current()
-        # row = text_widget.index('insert').split('.')[0]
-        self.remove_tags2(1)
-        # content = text_widget.get("1.0", 'end')
-        # lines = content.split("\n")
-        text_widget.mark_set("range_start", "1" + ".0")
-        data = text_widget.get("1.0", "end")
-        for token, content in lex(data, Python3Lexer()):
-            text_widget.mark_set("range_end", "range_start + %dc" % len(content))
-            text_widget.tag_add(str(token), "range_start", "range_end")
-            text_widget.mark_set("range_start", "range_end")
-        self.tag_conf()
+        current_file = self.file_list[self.nb.index('current')]
+        if current_file is not None and current_file.endswith('.py'):
+            text_widget = self.get_current()
+            # row = text_widget.index('insert').split('.')[0]
+            self.remove_tags2(1)
+            # content = text_widget.get("1.0", 'end')
+            # lines = content.split("\n")
+            text_widget.mark_set("range_start", "1" + ".0")
+            data = text_widget.get("1.0", "end")
+            for token, content in lex(data, Python3Lexer()):
+                text_widget.mark_set("range_end", "range_start + %dc" % len(content))
+                text_widget.tag_add(str(token), "range_start", "range_end")
+                text_widget.mark_set("range_start", "range_end")
+            self.tag_conf()
