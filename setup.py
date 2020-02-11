@@ -1,8 +1,10 @@
 """
-Main setup file
+This is the main setup file. 
 """
 from all_events_keybindings import EventsAndKeyBindings
 import tkinter as tk
+
+
 
 class Application(EventsAndKeyBindings):
     """
